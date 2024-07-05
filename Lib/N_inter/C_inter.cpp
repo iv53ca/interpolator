@@ -10,8 +10,9 @@
 #include <iostream>
 #include <QFile>
 #include <QTextStream>
-#include <QDebug>/*
-#include <DAQmx.h>*/
+#include <QDebug>
+#include <cstdint>
+#include </Users/sofiakanukova/Downloads/22b9d32f384e0e189ce4191e4c908950-fbcecf250ba4f7e08ff6b255c957c79e930bf883/NIDAQmx.h>
 
 // --------------------------------------------------------
 
@@ -120,22 +121,53 @@ void C_inter::calc(QString source_lines) {
     N_inter::n_data::n_motion_vars::motion_table = m_motion_table;
     size_t length = m_motion_table.size();
 
+
     QFile file("/Users/sofiakanukova/Documents/PosVelTime.txt"); // create a QFile object
+    double *data = new double [5 * length]; //create array for DAQ
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) { // open the file in write-only text mode
         QTextStream out(&file); // create a QTextStream object
         for(size_t i = 0; i < length; i++){
             N_inter::n_motion_calc::n_types::n_motion_table::S_motion_table_item element = m_motion_table.at(i);
             N_inter::n_global_types::C_point position = element.m_position;
             N_inter::n_global_types::C_point velocity = element.m_velocity;
+
             double time = element.m_time;
             double x_pos = position[N_inter::n_global_types::X];
             double y_pos = position[N_inter::n_global_types::Y];
             double x_vel = velocity[N_inter::n_global_types::X];
             double y_vel = velocity[N_inter::n_global_types::Y];
-            out << "x: " << x_pos << ", y: " << y_pos << ", Vx: " << x_vel << ", Vy: " << y_vel << ", time " << time << "\n"; // write to the file
+
+            out << "x: " << x_pos << ", y: " << y_pos << ", Vx: " << x_vel << ", Vy: " << y_vel << ", time " << time << "\n";
+
+            data[i * 5 + 0] = x_pos;
+            data[i * 5 + 1] = y_pos;
+            data[i * 5 + 2] = x_vel;
+            data[i * 5 + 3] = y_vel;
+            data[i * 5 + 4] = time;
         }
+
+        TaskHandle taskHandle = 0;
+        DAQmxCreateTask("", &taskHandle);
+
+        DAQmxCreateAOVoltageChan(taskHandle, "Dev1/ao0", "Channel0", 0.0, 10.0, DAQmx_Val_Volts, NULL);
+        DAQmxCreateAOVoltageChan(taskHandle, "Dev1/ao1", "Channel1", 0.0, 10.0, DAQmx_Val_Volts, NULL);
+        DAQmxCreateAOVoltageChan(taskHandle, "Dev1/ao2", "Channel2", 0.0, 10.0, DAQmx_Val_Volts, NULL);
+        DAQmxCreateAOVoltageChan(taskHandle, "Dev1/ao3", "Channel3", 0.0, 10.0, DAQmx_Val_Volts, NULL);
+        DAQmxCreateAOVoltageChan(taskHandle, "Dev1/ao4", "Channel4", 0.0, 10.0, DAQmx_Val_Volts, NULL);
+
+        int32 samplesWritten = 0;
+        int32 samplesPerSecond = 1000; // adjust this value to set the sampling rate
+        DAQmxWriteAnalogF64(taskHandle, length, FALSE, 10.0, DAQmx_Val_GroupByChannel, data, &samplesWritten, NULL);
+
+        DAQmxStartTask(taskHandle);
+        DAQmxWaitUntilTaskDone(taskHandle, 10.0);
+        DAQmxClearTask(taskHandle);
+        delete[] data;
+
         file.close(); // close the file
-    } else {
+    }
+
+    else {
         qDebug() << "Failed to open file for writing.";
     }
 
