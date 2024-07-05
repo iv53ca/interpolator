@@ -1,0 +1,52 @@
+close('all');
+clear, clc;
+
+pi = 3.1415926535;
+step = 3;
+
+angles = [0 : 2 * pi / step : 2 * pi];
+
+% Цикл для первой прямой
+for i_angle_1 = 1 : 1 : length(angles)
+  % Первая прямая
+  line1 = [0, 0, 5, 0];
+  sourceX1 = line1(3);
+  sourceY1 = line1(4);
+  % rotatedX1 = sourceX1;
+  % rotatedY1 = sourceY1;
+  rotatedX1 = sourceX1 * cos(angles(i_angle_1)) - sourceY1 * sin(angles(i_angle_1));
+  rotatedY1 = sourceX1 * sin(angles(i_angle_1)) + sourceY1 * cos(angles(i_angle_1));
+
+  % Цикл для второй прямой
+  for i_angle_2 = 1 : 1 : length(angles)
+    line2 = [0, 0, 5, 0];
+    % Вторая прямая
+    sourceX2 = line2(3);
+    sourceY2 = line2(4);
+    rotatedX2 = sourceX2 * cos(angles(i_angle_2)) - sourceY2 * sin(angles(i_angle_2));
+    rotatedY2 = sourceX2 * sin(angles(i_angle_2)) + sourceY2 * cos(angles(i_angle_2));
+
+    for i_angle_3 = 1 : 1 : length(angles)
+      line3 = [rotatedX2, rotatedY2, rotatedX2 + 5, rotatedY2];
+      sourceX3 = line2(3);
+      sourceY2 = line2(4);
+      rotatedX3 = sourceX3 * cos(angles(i_angle_3)) - sourceY2 * sin(angles(i_angle_3));
+      rotatedY3 = sourceX3 * sin(angles(i_angle_3)) + sourceY2 * cos(angles(i_angle_3));
+
+      printf("[%f, %f, 0, 0, 1]\n[0, 0, %f, %f, 1]\n[%f, %f, %f, %f, 1]\n--------------------\n", rotatedX1, rotatedY1, rotatedX2, rotatedY2, rotatedX2, rotatedY2, rotatedX3, rotatedY3);
+
+      figure();
+      hold on, grid on;
+      plot([0, rotatedX1], [0, rotatedY1], '-b');
+      plot([0, rotatedX2], [0, rotatedY2], '-r');
+      plot([rotatedX2, rotatedX3], [rotatedY2, rotatedY3], '-k');
+    endfor
+
+
+
+    % figure();
+    % hold on, grid on;
+    % plot([0, rotatedX1], [0, rotatedY1], '-b');
+    % plot([0, rotatedX2], [0, rotatedY2], '-r');
+  endfor
+endfor
