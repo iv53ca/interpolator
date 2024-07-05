@@ -1,0 +1,9 @@
+Files:
+C_typical_arcs.h 
+C_typical_arcs.cpp
+C_triangle.h
+C_triangle.cpp
+C_trapezoid.h
+C_trapezoid.cpp
+C_arc_circle.h
+C_arc_circle.cpp
