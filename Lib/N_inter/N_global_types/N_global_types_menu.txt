@@ -1,0 +1,16 @@
+Files:
+S_inter_parabola.h
+S_parabola.h
+S_trajectory_input.h 
+S_track.h
+S_track.cpp
+S_bounds.h
+C_vector.h 
+C_vector.cpp
+C_point.h 
+C_point.cpp
+
+Folders: 
+S_parabola
+S_circle 
+C_segment
