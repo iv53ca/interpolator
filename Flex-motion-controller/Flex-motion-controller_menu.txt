@@ -1,0 +1,13 @@
+Files:
+Flex-motion-controller.pro.user
+Flex-motion-controller.pro
+QMW_MAIN.ui
+TODO.h
+QMW_MAIN.h
+QMW_MAIN.cpp
+main.cpp
+
+Folders:
+build
+Test lines 
+Plots
