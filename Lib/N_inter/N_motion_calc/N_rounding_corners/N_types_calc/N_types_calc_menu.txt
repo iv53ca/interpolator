@@ -1,0 +1,7 @@
+Files:
+n_trapezoids.h
+n_trapezoids.cpp
+n_triangles.h
+n_triangles.cpp
+N_arc_circles.h
+N_arc_circles.cpp
